@@ -1,6 +1,5 @@
 const request = require("request-promise");
 const Discord = require("discord.js");
-const settings = require("./settings.json");
 
 const client = new Discord.Client();
 
