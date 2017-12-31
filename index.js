@@ -24,7 +24,8 @@ client.on("message", async message => {
 			return b.voteNumber - a.voteNumber;
 		}).slice(0, 5);
 		reply.edit({ embed: {
-			description: "Binance community vote - top 5\nGo [here](https://www.binance.com/vote.html) to vote.",
+			color: 3846809,
+			description: "[Binance community vote](https://www.binance.com/vote.html) - top 5",
 			fields: toFields(voteOptions, totalVotes)
 		}});
 	}
