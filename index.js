@@ -16,28 +16,28 @@ const reqOptions = {
 client.on("message", async message => {
 	if (message.content === "!votes") {
 		let reply = await message.channel.send("Getting vote standings...");
-		const res = await request(reqOptions);
-		const totalVotes = res.voteList[0].voteCount;
 
-		const utcNow = Math.floor(Date.now() / 1000);
-		const endTime = res.voteList[0].vote.endTime;
-		const seconds = endTime - utcNow;
-		const days = Math.floor((seconds % 31536000) / 86400);
-		const hours = Math.floor(((seconds % 31536000) % 86400) / 3600);
-		const minutes = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
-
-		let voteOptions = res.voteList[0].optionList;
-		voteOptions = voteOptions.sort((a, b) => {
-			return b.voteNumber - a.voteNumber;
-		}).slice(0, 5);
-		reply.edit({ embed: {
-			color: 3846809,
-			description: "[Binance community vote](https://www.binance.com/vote.html) (top 5)  🞄  [*How to vote*](https://www.reddit.com/r/RaiBlocks/comments/7n7xyn/vote_to_get_xrb_on_binance_howto/)",
-			fields: toFields(voteOptions, totalVotes),
-			footer: {
-				text: `${days}d ${hours}h ${minutes}m remaining for vote.`
-			}
-		}});
+		try {
+			const res = await request(reqOptions);
+			const totalVotes = res.voteList[0].voteCount;
+			let voteOptions = res.voteList[0].optionList;
+			voteOptions = voteOptions.sort((a, b) => {
+				return b.voteNumber - a.voteNumber;
+			}).slice(0, 5);
+			reply.edit({
+				embed: {
+					color: 3846809,
+					description: "[Binance community vote](https://www.binance.com/vote.html) (top 5)  🞄  [*How to vote*](https://www.reddit.com/r/RaiBlocks/comments/7n7xyn/vote_to_get_xrb_on_binance_howto/)",
+					fields: toFields(voteOptions, totalVotes),
+					footer: {
+						text: getFooter(res.voteList[0].vote.endTime)
+					}
+				}
+			});
+		}
+		catch (error) {
+			reply.edit("Failed to get vote data.");
+		}
 	}
 });
 
@@ -51,6 +51,18 @@ function toFields(voteOptions, totalVotes) {
 			inline: false
 		};
 	});
+}
+
+function getFooter(voteEndTime) {
+	const utcNow = Math.floor(Date.now() / 1000);
+	const seconds = voteEndTime - utcNow;
+	if (seconds > 0) {
+		const days = Math.floor((seconds % 31536000) / 86400);
+		const hours = Math.floor(((seconds % 31536000) % 86400) / 3600);
+		const minutes = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
+		return `${days}d ${hours}h ${minutes}m remaining for vote.`;
+	}
+	return "Vote has ended."
 }
 
 client.login(process.env.TOKEN);
