@@ -43,4 +43,6 @@ function toFields(voteOptions, totalVotes) {
 	});
 }
 
-client.login(settings.token);
+console.log(process.env);
+
+client.login(process.env.TOKEN);
