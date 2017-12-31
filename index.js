@@ -44,12 +44,20 @@ function toFields(voteOptions, totalVotes) {
 	const emojis = [":one:", ":two:", ":three:", ":four:", ":five:"];
 	return voteOptions.map((v, idx) => {
 		const percentage = (v.voteNumber / totalVotes) * 100;
+		const cmcLink = getCMCLink(v.optionName);
 		return {
 			name: `${emojis[idx]} ${v.optionName}`,
-			value: `**${v.voteNumber}** (${percentage.toFixed(2)}%)`,
+			value: `**${v.voteNumber}** (${percentage.toFixed(2)}%)  🞄  [CMC](${cmcLink})`,
 			inline: false
 		};
 	});
+}
+
+function getCMCLink(optionName) {
+	const parenthIdx = optionName.indexOf("(");
+	let currencyName = optionName.substring(0, parenthIdx - 1);
+	currencyName = currencyName.replace(/ /g, "-");
+	return `https://coinmarketcap.com/currencies/${currencyName}`;
 }
 
 function getFooter(voteEndTime) {
