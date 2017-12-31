@@ -3,11 +3,10 @@ const Discord = require("discord.js");
 const settings = require("./settings.json");
 
 const client = new Discord.Client();
+
 client.on("ready", () => {
 	console.log("Online");
 });
-
-const timeout = ms => new Promise(res => setTimeout(res, ms))
 
 const reqOptions = {
 	uri: "https://www.binance.com/vote/getVote.html",
@@ -16,13 +15,27 @@ const reqOptions = {
 
 client.on("message", async message => {
 	if (message.content === "!votes") {
-		console.log("display votes");
-		let reply = await message.channel.send("thanks");
+		let reply = await message.channel.send("Getting vote standings...");
 		const res = await request(reqOptions);
-		const voteOptions = res.voteList[0].optionList;
-		console.log(voteOptions);
-		reply.edit(JSON.stringify(voteOptions));
+		let voteOptions = res.voteList[0].optionList;
+		voteOptions = voteOptions.sort((a, b) => {
+			return b.voteNumber - a.voteNumber;
+		}).slice(0, 5);
+		reply.edit({ embed: {
+			description: "Binance community vote - top 5\nGo [here](https://www.binance.com/vote.html) to vote.",
+			fields: toFields(voteOptions)
+		}});
 	}
 });
+
+function toFields(voteOptions) {
+	return voteOptions.map(v => {
+		return {
+			name: v.optionName,
+			value: v.voteNumber,
+			inline: false
+		};
+	});
+}
 
 client.login(settings.token);
