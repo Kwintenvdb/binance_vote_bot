@@ -32,10 +32,11 @@ client.on("message", async message => {
 });
 
 function toFields(voteOptions, totalVotes) {
-	return voteOptions.map(v => {
+	const emojis = [":one:", ":two:", ":three:", ":four:", ":five:"];
+	return voteOptions.map((v, idx) => {
 		const percentage = (v.voteNumber / totalVotes) * 100;
 		return {
-			name: v.optionName,
+			name: `${emojis[idx]} ${v.optionName}`,
 			value: `${v.voteNumber} (${percentage.toFixed(2)}%)`,
 			inline: false
 		};
