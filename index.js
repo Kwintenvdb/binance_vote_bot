@@ -43,3 +43,15 @@ function toFields(voteOptions, totalVotes) {
 }
 
 client.login(process.env.TOKEN);
+
+// Heroku stuff
+const express = require("express");
+const app = express();
+
+app.set("port", (process.env.PORT || 5000));
+//For avoidong Heroku $PORT error
+app.get("/", (request, response) => {
+	response.send("App is running");
+}).listen(app.get("port"), () => {
+	console.log("App is running, server is listening on port ", app.get("port"));
+});
