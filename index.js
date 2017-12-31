@@ -24,7 +24,7 @@ client.on("message", async message => {
 		}).slice(0, 5);
 		reply.edit({ embed: {
 			color: 3846809,
-			description: "[Binance community vote](https://www.binance.com/vote.html) - top 5",
+			description: "[Binance community vote](https://www.binance.com/vote.html) (top 5)  🞄  [*How to vote*](https://www.reddit.com/r/RaiBlocks/comments/7n7xyn/vote_to_get_xrb_on_binance_howto/)",
 			fields: toFields(voteOptions, totalVotes)
 		}});
 	}
