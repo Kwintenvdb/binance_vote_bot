@@ -86,7 +86,12 @@ app.get("/", (request, response) => {
 	console.log("App is running, server is listening on port ", app.get("port"));
 	// Ping Heroku app every 5 minutes.
 	setInterval(() => {
-		console.log("Pinging Heroku app to keep it awake.");
-		request("https://binance-vote-bot.herokuapp.com/");
+		try {
+			console.log("Pinging Heroku app to keep it awake.");
+			request("https://binance-vote-bot.herokuapp.com/");
+		}
+		catch (e) {
+			console.log(e);
+		}
 	}, 300000);
 });
